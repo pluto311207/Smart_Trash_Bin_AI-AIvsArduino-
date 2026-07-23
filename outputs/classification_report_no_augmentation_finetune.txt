@@ -1,12 +1,12 @@
 Model: D:\AI Projects\AI vs Arduino\Smart Trash Bin\models\mobilenetv2_no_augmentation_finetune.keras
-Overall Accuracy: 0.6575
+Overall Accuracy: 0.7237
 
               precision    recall  f1-score   support
 
-       Metal     0.6522    0.7143    0.6818        21
-       Paper     0.7333    0.5238    0.6111        21
-     Plastic     0.6286    0.7097    0.6667        31
+       Metal     0.7308    0.8636    0.7917        22
+       Paper     0.7500    0.6818    0.7143        22
+     Plastic     0.7000    0.6562    0.6774        32
 
-    accuracy                         0.6575        73
-   macro avg     0.6714    0.6493    0.6532        73
-weighted avg     0.6655    0.6575    0.6550        73
+    accuracy                         0.7237        76
+   macro avg     0.7269    0.7339    0.7278        76
+weighted avg     0.7234    0.7237    0.7212        76

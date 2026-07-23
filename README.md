@@ -120,244 +120,81 @@ The two approaches are evaluated and compared using the same test dataset.
 
 ---
 
-# Current Results
-
-Current prototype performance:
-
-- Test Accuracy: ~65%
-- Evaluation metrics:
-  - Precision
-  - Recall
-  - F1-score
-  - Confusion Matrix
-
-This result is based on a relatively small dataset and serves as the first working prototype.
-
----
-
 # Results
 
-## Training Accuracy & Loss
+## Test Performance
 
-### Without Data Augmentation
+The project evaluated four MobileNetV2 training configurations.
 
-![Training Curves](outputs/no_augmentation_loss.png)
-![Training Curves](outputs/no_augmentation_accuracy.png)
+| Model | Test Accuracy |
+|--------|--------------:|
+| No Augmentation + Transfer Learning | 65.79% |
+| **No Augmentation + Fine-tuning** | **72.37%** |
+| Augmentation + Transfer Learning | 64.47% |
+| Augmentation + Fine-tuning | 60.53% |
 
-### With Data Augmentation
-
-![Training Curves](outputs/augmentation_loss.png)
-![Training Curves](outputs/augmentation_accuracy.png)
+The best-performing model was **MobileNetV2 with Fine-tuning (No Augmentation)**, achieving **72.37%** test accuracy.
 
 ---
 
 ## Confusion Matrix
 
-### Best Model
+#### Model: No_augmentation - Transfer
+![no_aug-trans](outputs/confusion_matrix_no_augmentation_transfer.png)
 
-![Confusion Matrix](outputs/confusion_matrix_no_augmentation_transfer.png)
+#### Model: No_augmentation - Finetune
+![no_aug-fine](outputs/confusion_matrix_no_augmentation_finetune.png)
+
+#### Model: Augmentation - Transfer
+![aug-trans](outputs/confusion_matrix_augmentation_transfer.png)
+
+#### Model: Augmentation - Finetune
+![aug-fine](outputs/confusion_matrix_augmentation_finetune.png)
+
+```
+outputs/confusion_matrix_no_augmentation_finetune.png
+```
 
 ---
 
-## Classification Report
+## Accuracy & Loss Curves
 
-===== Classification Report =====
-              precision    recall  f1-score   support
+#### Model: No_augmentation:
 
-       Metal     0.6296    0.8095    0.7083        21
-       Paper     0.7222    0.6190    0.6667        21
-     Plastic     0.6429    0.5806    0.6102        31
+![no_aug_acc](outputs/no_augmentation_accuracy.png)
+![no_aug_loss](outputs/no_augmentation_loss.png)
 
-    accuracy                         0.6575        73
-   macro avg     0.6649    0.6697    0.6617        73
-weighted avg     0.6619    0.6575    0.6547        73
+#### Model: Augmentation:
 
-Overall Accuracy: 0.6575
+![aug_acc](outputs/augmentation_accuracy.png)
+![aug_loss](outputs/augmentation_loss.png)
 
 ---
 
-## Demo Predictions
+## Prediction Demo
 
-![](outputs/predictions/Metal_01_result.jpg)
+The final model was tested using unseen real-world waste images.
 
-```
-Image      : Metal_01.jpg
-Prediction : Paper
-Confidence : 52.69%
+Example prediction results:
 
-Class Probabilities:
-Paper     : 52.69%
-Metal     : 41.21%
-Plastic   : 6.10%
-```
+| Image | Ground Truth | Prediction |
+|--------|--------------|------------|
+| Metal_01 | Metal | ✅ Metal |
+| Metal_02 | Metal | ✅ Metal |
+| Metal_03 | Metal | ✅ Metal |
+| Paper_01 | Paper | ❌ Plastic |
+| Paper_02 | Paper | ❌ Plastic |
+| Paper_03 | Paper | ✅ Paper |
+| Paper_04 | Paper | ✅ Paper |
+| Plastic_01 | Plastic | ✅ Plastic |
+| Plastic_02 | Plastic | ✅ Plastic |
+| Plastic_03 | Plastic | ✅ Plastic |
+| Plastic_04 | Plastic | ❌ Metal |
 
-![](outputs/predictions/Paper_01_result.jpg)
-
-```
-Image      : Paper_01.jpg
-Prediction : Paper
-Confidence : 88.42%
-
-Class Probabilities:
-Paper     : 88.42%
-Plastic   : 10.84%
-Metal     : 0.74%
-```
-
-![](outputs/predictions/Paper_02_result.jpg)
+Prediction images can be found in:
 
 ```
-Image      : Paper_02.jpg
-Prediction : Paper
-Confidence : 62.10%
-
-Class Probabilities:
-Paper     : 62.10%
-Plastic   : 29.24%
-Metal     : 8.66%
-```
-
-![](outputs/predictions/Paper_03_result.jpg)
-
-```
-Image      : Paper_03.jpg
-Prediction : Paper
-Confidence : 57.34%
-
-Class Probabilities:
-Paper     : 57.34%
-Plastic   : 22.56%
-Metal     : 20.10%
-```
-
-![](outputs/predictions/Paper_04_result.jpg)
-
-```
-Image      : Paper_04.jpg
-Prediction : Paper
-Confidence : 70.16%
-
-Class Probabilities:
-Paper     : 70.16%
-Plastic   : 28.56%
-Metal     : 1.27%
-```
-
-![](outputs/predictions/Paper_05_result.jpg)
-
-```
-Image      : Paper_05.jpg
-Prediction : Paper
-Confidence : 89.58%
-
-Class Probabilities:
-Paper     : 89.58%
-Plastic   : 5.42%
-Metal     : 4.99%
-```
-
-![](outputs/predictions/Paper_06_result.jpg)
-
-```
-Image      : Paper_06.jpg
-Prediction : Paper
-Confidence : 51.00%
-
-Class Probabilities:
-Paper     : 51.00%
-Plastic   : 30.06%
-Metal     : 18.94%
-```
-
-![](outputs/predictions/Paper_07_result.jpg)
-
-```
-Image      : Paper_07.jpg
-Prediction : Paper
-Confidence : 76.31%
-
-Class Probabilities:
-Paper     : 76.31%
-Plastic   : 17.74%
-Metal     : 5.94%
-```
-
-![](outputs/predictions/Plastic_01_result.jpg)
-
-```
-Image      : Plastic_01.jpg
-Prediction : Plastic
-Confidence : 67.99%
-
-Class Probabilities:
-Plastic   : 67.99%
-Metal     : 20.45%
-Paper     : 11.56%
-```
-
-![](outputs/predictions/Plastic_02_result.jpg)
-
-```
-Image      : Plastic_02.jpg
-Prediction : Paper
-Confidence : 52.99%
-
-Class Probabilities:
-Paper     : 52.99%
-Plastic   : 43.27%
-Metal     : 3.74%
-```
-
-![](outputs/predictions/Plastic_03_result.jpg)
-
-```
-Image      : Plastic_03.jpg
-Prediction : Paper
-Confidence : 85.40%
-
-Class Probabilities:
-Paper     : 85.40%
-Plastic   : 11.30%
-Metal     : 3.30%
-```
-
-![](outputs/predictions/Plastic_04_result.jpg)
-
-```
-Image      : Plastic_04.jpg
-Prediction : Metal
-Confidence : 49.35%
-
-Class Probabilities:
-Metal     : 49.35%
-Plastic   : 48.53%
-Paper     : 2.12%
-```
-
-![](outputs/predictions/Plastic_05_result.jpg)
-
-```
-Image      : Plastic_05.jpg
-Prediction : Metal
-Confidence : 86.26%
-
-Class Probabilities:
-Metal     : 86.26%
-Paper     : 7.44%
-Plastic   : 6.30%
-```
-
-![](outputs/predictions/Plastic_06_result.jpg)
-
-```
-Image      : Plastic_06.jpg
-Prediction : Metal
-Confidence : 79.80%
-
-Class Probabilities:
-Metal     : 79.80%
-Plastic   : 12.85%
-Paper     : 7.35%
+outputs/predictions/
 ```
 
 ---
@@ -379,34 +216,154 @@ pip install -r requirements.txt
 ## 3. Preprocess dataset
 
 ```bash
-python src/preprocess.py
+python scripts/preprocess.py
 ```
 
 ## 4. Train model
 
 ```bash
-python src/train.py
+python scripts/train.py
 ```
 
 ## 5. Evaluate model
 
 ```bash
-python src/evaluate.py
+python scripts/evaluate.py
+```
+
+## 6. Run prediction on demo images
+
+```bash
+python scripts/predict.py
 ```
 
 ---
 
-## Future Improvements (Version 2)
+# Future Improvements
 
-- [ ] Increase dataset diversity with more object categories.
-- [ ] Improve image quality by removing blurry samples.
-- [ ] Automatically crop objects before resizing.
-- [ ] Increase object size inside images.
-- [ ] Collect more Metal and Plastic samples.
-- [ ] Evaluate EfficientNetB0/B1.
-- [ ] Deploy model on Raspberry Pi.
-- [ ] Optimize inference speed using TensorFlow Lite.
-- [ ] Improve Edge AI performance.
+The project roadmap is divided into two major development stages.
+
+---
+
+## Version 2 — Improve Model Performance
+
+The primary goal of Version 2 is to significantly improve the classification performance before deploying the system to embedded hardware.
+
+### 1. Expand the Dataset
+
+Increase the dataset size from approximately **700 images** to **1,200+ images**.
+
+---
+
+### 2. Improve Paper Diversity
+
+Collect more paper objects that are currently underrepresented in the dataset, including:
+
+- Paper packaging
+- Cereal boxes
+- Cardboard
+- Paper bags
+- Tea bags
+- Envelopes
+- Folded paper
+- Crumpled paper
+- Paper cups
+
+This aims to reduce the frequent confusion between **Paper** and **Plastic**.
+
+---
+
+### 3. Improve Metal Diversity
+
+Collect additional metal objects with different appearances, such as:
+
+- Old cans
+- Scratched cans
+- Matte metal
+- Stainless steel utensils
+- Pot lids
+- Low-reflective metal objects
+
+This helps the model recognize metal objects regardless of their surface reflectivity.
+
+---
+
+### 4. Improve Plastic Diversity
+
+Add more uncommon plastic objects, including:
+
+- Plastic brushes
+- Plastic toys
+- Plastic balls
+- Cosmetic containers
+- Plastic baskets
+- Plastic hangers
+- Food containers
+- Plastic utensils
+- Bottle caps
+- Bottles with different shapes
+
+This increases the model's ability to generalize to unseen plastic objects.
+
+---
+
+### 5. Increase Data Diversity
+
+Capture each object under different conditions:
+
+- Multiple viewing angles
+- Various object sizes
+- Different distances
+- Different lighting conditions
+- Partial occlusions
+
+The objective is to improve the robustness of the model in real-world environments.
+
+---
+
+### 6. Optimize the Deep Learning Model
+
+Experiment with different training strategies, including:
+
+- More extensive fine-tuning
+- Improved data augmentation
+- Hyperparameter optimization
+
+The goal is to achieve higher accuracy and better generalization before hardware deployment.
+
+---
+
+## Version 3 — Edge AI Deployment
+
+After obtaining a well-performing model in Version 2, the project will focus on deploying the system onto embedded hardware.
+
+### 1. Raspberry Pi Deployment
+
+Deploy the trained model on a Raspberry Pi for standalone inference.
+
+---
+
+### 2. ESP32 Camera Integration
+
+Replace the laptop webcam with an ESP32 camera module to capture waste images automatically.
+
+---
+
+### 3. Edge AI Inference
+
+Run the optimized model locally on the Raspberry Pi using TensorFlow Lite to eliminate the dependency on a desktop computer.
+
+---
+
+### 4. Automatic Waste Sorting
+
+Integrate the AI model with the Arduino-based control system to automatically classify and sort waste into the correct bins in real time.
+
+---
+
+### 5. System Optimization
+
+Optimize the complete Smart Trash Bin system by reducing inference latency, improving hardware reliability, and minimizing power consumption for practical deployment.
 
 ---
 
@@ -423,14 +380,28 @@ python src/evaluate.py
 
 ---
 
-## Conclusion
-The prototype successfully demonstrates that MobileNetV2 with transfer learning can classify waste into three categories (Metal, Plastic, and Paper) using a relatively small custom dataset.
+# Conclusion
 
-The model achieved an overall test accuracy of approximately 65%, showing that it learned meaningful visual features and was able to correctly classify many unseen images. Paper objects were generally recognized with higher confidence, while Metal and Plastic were more frequently confused due to similar colors, shapes, and reflective surfaces.
+This prototype demonstrates that MobileNetV2 can effectively classify waste into three categories: **Metal**, **Plastic**, and **Paper** using a relatively small custom dataset.
 
-Prediction results also indicate that the model performs well on common objects included in the training dataset, but struggles with uncommon plastic items such as cosmetic containers or rubber accessories. This suggests that the current limitation is primarily related to dataset diversity rather than the model architecture itself.
+After performing dataset cleaning and improving the preprocessing pipeline, the best model achieved **72.37%** test accuracy. The model showed significantly better generalization compared to earlier experiments, particularly for Metal and Plastic objects.
 
-Overall, the project successfully validates the feasibility of using deep learning for a Smart Trash Bin prototype. Future improvements will focus on expanding the dataset, improving image quality, automatically cropping objects before training, and deploying an optimized model on Raspberry Pi for real-time edge AI inference.
+## Strengths
+
+- Correctly classified most Metal objects with high confidence.
+- Plastic classification became more stable after improving the dataset.
+- MobileNetV2 is lightweight and suitable for future deployment on Raspberry Pi.
+
+## Current Limitations
+
+Although the overall performance improved, several limitations remain:
+
+- Paper packaging is frequently confused with Plastic.
+- Some uncommon Plastic objects (such as brushes or toys) are still difficult to classify.
+- Metal objects with low reflectivity can occasionally be confused with Plastic.
+- The dataset is still relatively small, limiting the model's ability to generalize to unseen objects.
+
+Overall, Version 1 successfully validates the feasibility of using deep learning for an AI-based Smart Trash Bin and provides a solid baseline for future improvements.
 
 ---
 

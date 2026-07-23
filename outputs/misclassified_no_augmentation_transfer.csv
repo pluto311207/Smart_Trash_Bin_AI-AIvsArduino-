@@ -1,0 +1,27 @@
+filename,original_path,true_label,predicted_label,confidence,prob_Metal,prob_Paper,prob_Plastic
+Metal_0198.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Metal\Metal_0198.jpg,Metal,Plastic,0.7208865284919739,0.1888875663280487,0.09022597968578339,0.7208865284919739
+Metal_0199.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Metal\Metal_0199.jpg,Metal,Plastic,0.6917189955711365,0.2535441219806671,0.054736826568841934,0.6917189955711365
+Metal_0209.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Metal\Metal_0209.jpg,Metal,Plastic,0.5689212083816528,0.16760967671871185,0.26346907019615173,0.5689212083816528
+Metal_0214.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Metal\Metal_0214.jpg,Metal,Paper,0.4413493871688843,0.43734318017959595,0.4413493871688843,0.12130734324455261
+Paper_0186.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0186.jpg,Paper,Metal,0.7736651301383972,0.7736651301383972,0.11084752529859543,0.11548734456300735
+Paper_0193.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0193.jpg,Paper,Plastic,0.6724964380264282,0.26241496205329895,0.06508862227201462,0.6724964380264282
+Paper_0195.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0195.jpg,Paper,Plastic,0.6470144391059875,0.24097014963626862,0.11201545596122742,0.6470144391059875
+Paper_0196.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0196.jpg,Paper,Plastic,0.6477172374725342,0.17255133390426636,0.17973139882087708,0.6477172374725342
+Paper_0200.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0200.jpg,Paper,Plastic,0.6112609505653381,0.018152916803956032,0.370586097240448,0.6112609505653381
+Paper_0202.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0202.jpg,Paper,Plastic,0.5547980666160583,0.023571498692035675,0.4216304421424866,0.5547980666160583
+Paper_0203.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0203.jpg,Paper,Plastic,0.880402684211731,0.05609762668609619,0.06349965184926987,0.880402684211731
+Paper_0207.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Paper\Paper_0207.jpg,Paper,Plastic,0.6904096603393555,0.22033800184726715,0.08925232291221619,0.6904096603393555
+Plastic_0289.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0289.jpg,Plastic,Paper,0.4112209975719452,0.2570781111717224,0.4112209975719452,0.3317008912563324
+Plastic_0291.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0291.jpg,Plastic,Paper,0.49990394711494446,0.06989356875419617,0.49990394711494446,0.43020254373550415
+Plastic_0297.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0297.jpg,Plastic,Metal,0.5342190265655518,0.5342190265655518,0.06924203038215637,0.39653894305229187
+Plastic_0298.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0298.jpg,Plastic,Paper,0.5094164609909058,0.0995236411690712,0.5094164609909058,0.39105984568595886
+Plastic_0300.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0300.jpg,Plastic,Paper,0.6681761741638184,0.16871842741966248,0.6681761741638184,0.16310539841651917
+Plastic_0301.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0301.jpg,Plastic,Paper,0.6089532971382141,0.09634299576282501,0.6089532971382141,0.29470372200012207
+Plastic_0303.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0303.jpg,Plastic,Metal,0.5004632472991943,0.5004632472991943,0.11621282994747162,0.38332399725914
+Plastic_0305.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0305.jpg,Plastic,Paper,0.7175977826118469,0.07446320354938507,0.7175977826118469,0.2079390436410904
+Plastic_0306.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0306.jpg,Plastic,Metal,0.8411116003990173,0.8411116003990173,0.09144993126392365,0.06743843853473663
+Plastic_0307.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0307.jpg,Plastic,Metal,0.9661591053009033,0.9661591053009033,0.0024372339248657227,0.03140369430184364
+Plastic_0313.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0313.jpg,Plastic,Paper,0.47116073966026306,0.22710177302360535,0.47116073966026306,0.30173754692077637
+Plastic_0315.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0315.jpg,Plastic,Paper,0.46077460050582886,0.18007145822048187,0.46077460050582886,0.3591539263725281
+Plastic_0316.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0316.jpg,Plastic,Metal,0.6532175540924072,0.6532175540924072,0.12930414080619812,0.21747834980487823
+Plastic_0317.jpg,D:\AI Projects\AI vs Arduino\Smart Trash Bin\dataset\processed\test\Plastic\Plastic_0317.jpg,Plastic,Metal,0.541414201259613,0.541414201259613,0.04734315723180771,0.41124266386032104

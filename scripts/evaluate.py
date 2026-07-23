@@ -12,6 +12,9 @@ Chạy:
 """
 
 import argparse
+import shutil
+from pathlib import Path
+
 import matplotlib
 matplotlib.use("Agg")
 
@@ -38,6 +41,10 @@ from config import (
     OUTPUT_DIR,
 )
 
+# Thư mục gốc chứa ảnh bị đoán sai, tổ chức theo cấu trúc
+# outputs/misclassified/<TrueClass>_to_<PredictedClass>/
+MISCLASSIFIED_DIR = OUTPUT_DIR / "misclassified"
+
 # QUAN TRỌNG: phải import custom_layers TRƯỚC khi gọi load_model(), để
 # Keras biết cách deserialize các custom layer (RandomHue) đã lưu trong
 # model .keras. Nếu thiếu dòng import này sẽ bị lỗi:
@@ -60,6 +67,7 @@ def load_test_dataset():
 def get_predictions(model, test_ds):
     y_true = []
     y_pred = []
+    y_probs = []
 
     for images, labels in test_ds:
         probs = model.predict(images, verbose=0)
@@ -67,8 +75,9 @@ def get_predictions(model, test_ds):
 
         y_true.extend(labels.numpy().tolist())
         y_pred.extend(preds.tolist())
+        y_probs.extend(probs.tolist())
 
-    return np.array(y_true), np.array(y_pred)
+    return np.array(y_true), np.array(y_pred), np.array(y_probs)
 
 
 def save_confusion_matrix(cm, filename, percent=False):
@@ -114,6 +123,74 @@ def save_confusion_csv(cm, filename):
     print(f"Saved: {OUTPUT_DIR / filename}")
 
 
+def run_error_analysis(y_true, y_pred, y_probs, file_paths, tag):
+    """
+    Tìm toàn bộ ảnh test bị đoán sai, copy vào đúng thư mục
+    outputs/misclassified/<TrueClass>_to_<PredictedClass>/, đồng thời
+    xuất 1 file CSV liệt kê chi tiết từng ảnh sai (nhãn thật, nhãn đoán,
+    độ tự tin, xác suất từng lớp).
+    """
+
+    # Reset thư mục misclassified mỗi lần chạy, tránh lẫn ảnh của lần
+    # evaluate trước (model/experiment khác) với lần này.
+    if MISCLASSIFIED_DIR.exists():
+        shutil.rmtree(MISCLASSIFIED_DIR)
+
+    for true_c in CLASS_NAMES:
+        for pred_c in CLASS_NAMES:
+            if true_c != pred_c:
+                (MISCLASSIFIED_DIR / f"{true_c}_to_{pred_c}").mkdir(
+                    parents=True, exist_ok=True
+                )
+
+    records = []
+
+    for i in range(len(y_true)):
+        if y_true[i] == y_pred[i]:
+            continue
+
+        true_label = CLASS_NAMES[y_true[i]]
+        pred_label = CLASS_NAMES[y_pred[i]]
+        confidence = float(np.max(y_probs[i]))
+
+        src_path = Path(file_paths[i])
+        dest_dir = MISCLASSIFIED_DIR / f"{true_label}_to_{pred_label}"
+        dest_path = dest_dir / src_path.name
+
+        shutil.copy2(src_path, dest_path)
+
+        record = {
+            "filename": src_path.name,
+            "original_path": str(src_path),
+            "true_label": true_label,
+            "predicted_label": pred_label,
+            "confidence": confidence,
+        }
+        for idx, class_name in enumerate(CLASS_NAMES):
+            record[f"prob_{class_name}"] = float(y_probs[i][idx])
+
+        records.append(record)
+
+    df = pd.DataFrame(records)
+
+    csv_path = OUTPUT_DIR / f"misclassified_{tag}.csv"
+    df.to_csv(csv_path, index=False)
+
+    print(f"\n===== Error Analysis =====")
+    print(f"Total misclassified: {len(records)} / {len(y_true)}")
+
+    if len(records) > 0:
+        print("\nBreakdown by error type:")
+        breakdown = df.groupby(["true_label", "predicted_label"]).size()
+        for (true_l, pred_l), count in breakdown.items():
+            print(f"  {true_l:10s} -> {pred_l:10s}: {count}")
+
+    print(f"\nSaved misclassified images to: {MISCLASSIFIED_DIR}")
+    print(f"Saved: {csv_path}")
+
+    return df
+
+
 def main():
 
     parser = argparse.ArgumentParser()
@@ -153,10 +230,16 @@ def main():
 
     test_ds = load_test_dataset()
 
+    # .file_paths chỉ đáng tin cậy khi shuffle=False (đã set trong
+    # load_test_dataset) - đây là danh sách đường dẫn ảnh đúng theo thứ
+    # tự mà test_ds sẽ duyệt qua, dùng để đối chiếu ngược lại ảnh gốc
+    # cho từng dự đoán.
+    file_paths = test_ds.file_paths
+
     print("\nClass order:")
     print(test_ds.class_names)
 
-    y_true, y_pred = get_predictions(model, test_ds)
+    y_true, y_pred, y_probs = get_predictions(model, test_ds)
 
     # ==========================
     # Test dataset statistics
@@ -235,6 +318,18 @@ def main():
         f.write(report)
 
     print(f"Saved: {report_path}")
+
+    # ==========================
+    # Error Analysis
+    # ==========================
+
+    run_error_analysis(
+        y_true,
+        y_pred,
+        y_probs,
+        file_paths,
+        tag,
+    )
 
 
 if __name__ == "__main__":
