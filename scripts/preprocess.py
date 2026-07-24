@@ -22,15 +22,12 @@ from config import (
 
 random.seed(RANDOM_SEED)
 
-# ==========================================================
 # Auto Crop Object
-# ==========================================================
-
 def _segment_foreground(gray_blur, invert):
     """
-    Threshold ảnh grayscale đã blur, trả về mask nhị phân (255 = vật thể).
-    invert=True  : giả định vật thể TỐI hơn nền (dùng THRESH_BINARY_INV)
-    invert=False : giả định vật thể SÁNG hơn nền (dùng THRESH_BINARY)
+    Threshold grayscale image, return binary mask (255 = object).
+    invert=True  : assume that object is darker than background (using THRESH_BINARY_INV)
+    invert=False : assume that object is lighter than background (using THRESH_BINARY)
     """
     flag = cv2.THRESH_BINARY_INV if invert else cv2.THRESH_BINARY
     _, thresh = cv2.threshold(gray_blur, 0, 255, flag + cv2.THRESH_OTSU)
@@ -38,13 +35,6 @@ def _segment_foreground(gray_blur, invert):
 
 
 def _border_leak_ratio(mask):
-    """
-    Tỉ lệ pixel "vật thể" (mask=255) nằm dọc theo viền ngoài cùng của
-    ảnh. Nếu vật thể thật sự nằm giữa khung hình (như cách thường chụp),
-    tỉ lệ này phải THẤP. Nếu threshold chọn sai chiều sáng/tối, nó sẽ
-    khoanh nhầm cả vùng nền lớn xung quanh - vùng đó luôn chạm viền ảnh
-    - nên tỉ lệ này sẽ CAO. Dùng chỉ số này để chọn đúng chiều threshold.
-    """
     h, w = mask.shape
     border = np.concatenate([
         mask[0, :], mask[-1, :], mask[:, 0], mask[:, -1],
@@ -58,10 +48,7 @@ def auto_crop(img):
 
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
 
-    # Thử cả 2 chiều threshold (vật thể tối / vật thể sáng), chọn chiều
-    # nào có ít pixel "vật thể" dính vào viền ảnh hơn - đó là dấu hiệu
-    # đáng tin cậy nhất cho biết thuật toán đang khoanh đúng vật thể ở
-    # giữa khung hình, chứ không phải khoanh nhầm cả vùng nền.
+    #Try two threshold way (dark object and light object. Then choose way that has clearer object)
     thresh_dark_object = _segment_foreground(blur, invert=True)
     thresh_bright_object = _segment_foreground(blur, invert=False)
 
@@ -82,9 +69,7 @@ def auto_crop(img):
     img_h, img_w = img.shape[:2]
 
     MIN_AREA = img_h * img_w * 0.005
-    # Loại luôn những contour chiếm gần hết khung hình (nhiều khả năng là
-    # nền/background bị khoanh nhầm thành vật thể, kể cả sau khi đã chọn
-    # chiều threshold tốt hơn ở trên).
+    # Removing contour that accounts most area (which is maybe the background)
     MAX_AREA = img_h * img_w * 0.90
 
     valid_contours = [
@@ -126,7 +111,7 @@ def auto_crop(img):
 
     crop_h, crop_w = crop.shape[:2]
 
-    # Không crop nếu vùng crop quá nhỏ
+    # Not crop if area is too small
     if min(crop_h, crop_w) < 120:
         return img
 
@@ -134,13 +119,7 @@ def auto_crop(img):
 
 
 def pad_to_square(img):
-    """
-    Thêm viền (padding) để ảnh thành hình vuông TRƯỚC khi resize, thay vì
-    resize thẳng crop_w x crop_h (thường không vuông) về 224x224 - resize
-    trực tiếp sẽ kéo méo hình dạng vật thể (vd vật thể tròn bị kéo thành
-    oval). Màu viền lấy trung bình màu 10px viền ngoài ảnh gốc, gần với
-    nền thật hơn là màu đen/trắng cứng.
-    """
+    ## Adding padding to turn iamges into square shape in order to avoid image distortion
     h, w = img.shape[:2]
     size = max(h, w)
 
@@ -163,10 +142,8 @@ def pad_to_square(img):
     )
 
 
-# ==========================================================
-# Reset processed dataset
-# ==========================================================
 
+# Reset processed dataset
 if PROCESSED_DIR.exists():
     print("Removing old processed dataset...")
     shutil.rmtree(PROCESSED_DIR)
@@ -180,16 +157,10 @@ for split in ["train", "val", "test"]:
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# ==========================================================
 # Dataset report
-# ==========================================================
-
 report = []
 
-# ==========================================================
 # Process each class
-# ==========================================================
-
 for cls in CLASS_NAMES:
 
     print(f"\n{'=' * 60}")
@@ -270,10 +241,7 @@ for cls in CLASS_NAMES:
         }
     )
 
-# ==========================================================
 # Save report
-# ==========================================================
-
 df = pd.DataFrame(report)
 
 csv_path = OUTPUT_DIR / "dataset_report.csv"

@@ -1,16 +1,3 @@
-"""
-evaluate.py
-
-Đánh giá model đã train trên tập test:
-    - Accuracy
-    - Precision / Recall / F1-score (per class + macro avg)
-    - Confusion Matrix (số lượng + phần trăm), xuất cả ảnh và CSV
-
-Chạy:
-    python scripts/evaluate.py --experiment augmentation --phase finetune
-    python scripts/evaluate.py --experiment no_augmentation --phase transfer
-"""
-
 import argparse
 import shutil
 from pathlib import Path
@@ -41,15 +28,9 @@ from config import (
     OUTPUT_DIR,
 )
 
-# Thư mục gốc chứa ảnh bị đoán sai, tổ chức theo cấu trúc
-# outputs/misclassified/<TrueClass>_to_<PredictedClass>/
+# Folder contains misclassified images
 MISCLASSIFIED_DIR = OUTPUT_DIR / "misclassified"
 
-# QUAN TRỌNG: phải import custom_layers TRƯỚC khi gọi load_model(), để
-# Keras biết cách deserialize các custom layer (RandomHue) đã lưu trong
-# model .keras. Nếu thiếu dòng import này sẽ bị lỗi:
-#   TypeError: <class 'keras.src.models.sequential.Sequential'> could not
-#   be deserialized properly...
 from custom_layers import RandomHue
 
 
@@ -124,15 +105,8 @@ def save_confusion_csv(cm, filename):
 
 
 def run_error_analysis(y_true, y_pred, y_probs, file_paths, tag):
-    """
-    Tìm toàn bộ ảnh test bị đoán sai, copy vào đúng thư mục
-    outputs/misclassified/<TrueClass>_to_<PredictedClass>/, đồng thời
-    xuất 1 file CSV liệt kê chi tiết từng ảnh sai (nhãn thật, nhãn đoán,
-    độ tự tin, xác suất từng lớp).
-    """
 
-    # Reset thư mục misclassified mỗi lần chạy, tránh lẫn ảnh của lần
-    # evaluate trước (model/experiment khác) với lần này.
+    # Reset folder in every run
     if MISCLASSIFIED_DIR.exists():
         shutil.rmtree(MISCLASSIFIED_DIR)
 
@@ -220,9 +194,6 @@ def main():
     print(f"\nLoading model:")
     print(model_path)
 
-    # custom_objects đưa vào tường minh để chắc chắn Keras deserialize
-    # đúng RandomHue, kể cả trong trường hợp registry tự động không nhận
-    # ra (ví dụ chạy từ working directory khác).
     model = tf.keras.models.load_model(
         model_path,
         custom_objects={"RandomHue": RandomHue},
@@ -230,10 +201,7 @@ def main():
 
     test_ds = load_test_dataset()
 
-    # .file_paths chỉ đáng tin cậy khi shuffle=False (đã set trong
-    # load_test_dataset) - đây là danh sách đường dẫn ảnh đúng theo thứ
-    # tự mà test_ds sẽ duyệt qua, dùng để đối chiếu ngược lại ảnh gốc
-    # cho từng dự đoán.
+
     file_paths = test_ds.file_paths
 
     print("\nClass order:")
@@ -241,10 +209,7 @@ def main():
 
     y_true, y_pred, y_probs = get_predictions(model, test_ds)
 
-    # ==========================
     # Test dataset statistics
-    # ==========================
-
     print("\n===== Test Dataset =====")
 
     unique, counts = np.unique(y_true, return_counts=True)
@@ -252,10 +217,7 @@ def main():
     for u, c in zip(unique, counts):
         print(f"{CLASS_NAMES[u]:10s}: {c}")
 
-    # ==========================
     # Classification Report
-    # ==========================
-
     print("\n===== Classification Report =====")
 
     report = classification_report(
@@ -273,10 +235,7 @@ def main():
 
     tag = f"{args.experiment}_{args.phase}"
 
-    # ==========================
     # Confusion Matrix
-    # ==========================
-
     cm = confusion_matrix(y_true, y_pred)
 
     save_confusion_matrix(
@@ -290,10 +249,7 @@ def main():
         filename=f"confusion_matrix_{tag}.csv",
     )
 
-    # ==========================
     # Normalized Confusion Matrix
-    # ==========================
-
     cm_percent = confusion_matrix(
         y_true,
         y_pred,
@@ -306,10 +262,7 @@ def main():
         percent=True,
     )
 
-    # ==========================
     # Save report
-    # ==========================
-
     report_path = OUTPUT_DIR / f"classification_report_{tag}.txt"
 
     with open(report_path, "w", encoding="utf-8") as f:
@@ -319,10 +272,7 @@ def main():
 
     print(f"Saved: {report_path}")
 
-    # ==========================
     # Error Analysis
-    # ==========================
-
     run_error_analysis(
         y_true,
         y_pred,
