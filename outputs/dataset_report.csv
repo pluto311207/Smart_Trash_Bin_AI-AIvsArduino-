@@ -1,4 +1,4 @@
 Class,Total Images,Train,Validation,Test,Failed
-Metal,215,150,43,22,0
-Paper,207,144,41,22,0
-Plastic,320,224,64,32,0
+Metal,277,193,55,29,0
+Paper,311,217,62,32,0
+Plastic,453,317,90,46,0

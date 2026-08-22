@@ -172,7 +172,7 @@ def main():
     parser.add_argument(
         "--experiment",
         choices=EXPERIMENTS,
-        default="augmentation",
+        default="no_augmentation",
         help="Choose which experiment to evaluate",
     )
 
